@@ -33,13 +33,13 @@ app.all('*', (req, res, next) => {
 })
 
 app.get('/login', (req, res, next) => {
-  conn.query('SELECT * FROM students', (e, r) => res.json(new Result({ data: r })))
+  conn.query('SELECT * FROM students', (e, r) => res.json(new Result({ data: r ,msg:'获取成功'})))
 })
 
 app.get('/api/getlist', (req, res, next) => {
   const sqlStr = 'SELECT * FROM students'
   conn.query(sqlStr, (err, results) => {
-    if (err) return res.json({ code: 1, msg: '资料不存在', data: {} })
+    // if (err) return res.json({ code: 1, msg: '资料不存在', data: {} })
     res.json({ code: 200, msg: '获取成功', data: results })
   })
 })
