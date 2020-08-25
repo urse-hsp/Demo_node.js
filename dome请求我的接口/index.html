@@ -17,24 +17,33 @@
   <script src="./js/vue.min.js"></script>
   <script src="./js/axios.min.js"></script>
   <script>
-    const url = 'http://localhost:8880/api/'
+    const url = 'http://localhost:8888/api/'
 
     document.getElementById('btn1').onclick = function () {
-      axios.post(url + 'setList')
+      axios.post(url + 'setList', {
+          id: '4',
+          name: '小王',
+          sex: '男',
+          age: '12',
+          address: '吉林',
+          hou: '3'
+        })
         .then(res => {
           console.log(res.data)
         })
     }
 
     document.getElementById('btn2').onclick = function () {
-      axios.put(url + 'alterList')
+      axios.put(url + `alterList/${4}`, {
+          name: '小老王'
+        })
         .then(res => {
           console.log(res.data)
         })
     }
 
     document.getElementById('btn3').onclick = function () {
-      axios.delete(url + 'deleteList')
+      axios.delete(url + `deleteList/${4}`)
         .then(res => {
           console.log(res.data)
         })
