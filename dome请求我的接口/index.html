@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <div>
+    <button id="btn1">添加</button>
+    <button id="btn2">修改</button>
+    <button id="btn3">删除</button>
+    <button id="btn4">获取</button>
+  </div>
+  <script src="./js/vue.min.js"></script>
+  <script src="./js/axios.min.js"></script>
+  <script>
+    const url = 'http://localhost:8880/api/'
+
+    document.getElementById('btn1').onclick = function () {
+      axios.post(url + 'setList')
+        .then(res => {
+          console.log(res.data)
+        })
+    }
+
+    document.getElementById('btn2').onclick = function () {
+      axios.put(url + 'alterList')
+        .then(res => {
+          console.log(res.data)
+        })
+    }
+
+    document.getElementById('btn3').onclick = function () {
+      axios.delete(url + 'deleteList')
+        .then(res => {
+          console.log(res.data)
+        })
+    }
+
+    document.getElementById('btn4').onclick = function () {
+      axios.get(url + 'getlist')
+        .then(res => {
+          console.log(res.data)
+        })
+    }
+  </script>
+</body>
+
+</html>

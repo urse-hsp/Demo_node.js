@@ -20,7 +20,7 @@ app.use(urlencoded({ extended: false })) // 表单请求
 
 const conn = mysql.createConnection(option)
 
-app.listen(80, () => console.log('启动服务'))
+app.listen(8880, () => console.log('启动服务'))
 
 let login = true
 
@@ -33,7 +33,7 @@ app.all('*', (req, res, next) => {
 })
 
 app.get('/login', (req, res, next) => {
-  conn.query('SELECT * FROM students', (e, r) => res.json(new Result({ data: r ,msg:'获取成功'})))
+  conn.query('SELECT * FROM students', (e, r) => res.json(new Result({ data: r, msg: '获取成功' })))
 })
 
 app.get('/api/getlist', (req, res, next) => {
@@ -41,6 +41,27 @@ app.get('/api/getlist', (req, res, next) => {
   conn.query(sqlStr, (err, results) => {
     // if (err) return res.json({ code: 1, msg: '资料不存在', data: {} })
     res.json({ code: 200, msg: '获取成功', data: results })
+  })
+})
+
+app.post('/api/setList', (req, res, next) => {
+  const sqlStr = "INSERT into students (id,name,sex,age,address,hou) values(4,'小王','男',12,'吉林',2)"
+  conn.query(sqlStr, (err, results) => {
+    res.json({ code: 200, msg: '添加成功' })
+  })
+})
+
+app.put('/api/alterList', (req, res, next) => {
+  const sqlStr = "UPDATE students set name = '小老王' where id=4"
+  conn.query(sqlStr, (err, results) => {
+    res.json({ code: 200, msg: '修改成功', data: results })
+  })
+})
+
+app.delete('/api/deleteList', (req, res, next) => {
+  const sqlStr = "delete from students WHERE id = 4"
+  conn.query(sqlStr, (err, results) => {
+    res.json({ code: 200, msg: '删除成功' })
   })
 })
 
