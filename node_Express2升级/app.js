@@ -47,10 +47,16 @@ app.get('/api/getlist', (req, res, next) => {
 app.post('/api/setList', (req, res, next) => {
   // const sqlStr = "INSERT into students (id,name,sex,age,address,hou) values(4,'小王','男',12,'吉林',2)"
   const json = req.body
-  const sqlStr = `INSERT into students (id,name,sex,age,address,hou) values(${json.id},'${json.name}','${json.sex}',${json.age},'${json.address}',${json.hou})`
-  conn.query(sqlStr, (err, results) => {
-    if (err) return res.json({ code: 1, msg: '添加失败', data: req.body })
-    res.json({ code: 200, msg: '添加成功', data: {} })
+  const sqlStr1 = `INSERT into students (name,sex,age,address,hou) values('${json.name}','${json.sex}',${json.age},'${json.address}',${json.hou})`
+  const sqlStr2 = `select name from students WHERE name='${json.name}' `
+  conn.query(sqlStr2, (err, results) => {
+    if (results.length === 0) {
+      conn.query(sqlStr1, (err, results) => {
+        res.json({ code: 200, msg: '添加成功', data: results })
+      })
+    } else {
+      res.json({ code: 202, msg: '名称重复', data: results })
+    }
   })
 })
 
