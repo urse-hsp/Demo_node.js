@@ -21,7 +21,7 @@
 
     document.getElementById('btn1').onclick = function () {
       axios.post(url + 'setList', {
-          name: '小王',
+          name: '小王头',
           sex: '男',
           age: '12',
           address: '吉林',
@@ -33,7 +33,7 @@
     }
 
     document.getElementById('btn2').onclick = function () {
-      axios.put(url + `alterList/${4}`, {
+      axios.put(url + `alterList/${6}`, {
           name: '小老王'
         })
         .then(res => {
@@ -47,6 +47,12 @@
           console.log(res.data)
         })
     }
+
+    // const headers = {
+    //   'Content-Type': 'application/json',
+    //   Accept: 'application/json',
+    //   Authorization: Token(),
+    // }
 
     document.getElementById('btn4').onclick = function () {
       axios.get(url + 'getlist')

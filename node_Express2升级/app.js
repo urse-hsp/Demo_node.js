@@ -24,12 +24,25 @@ app.listen(8888, () => console.log('启动服务'))
 
 let login = true
 
-// app.all方法，这个方法支持所有请求方式，不必每个请求都写好几遍了。
+// app.all方法，这个方法支持所有请求方式，不必每个  请求都写好几遍了。
 // 方法有三个返回值。第一个是传过来的。第二个是以什么形式返回 json等格式。第三个是继续执行下去
 
+// app.all('*', (req, res, next) => {
+//   if (!login) return res.json('未登录')
+//   next()
+// })
+
+// 设置跨域和相应数据格式
 app.all('*', (req, res, next) => {
-  if (!login) return res.json('未登录')
-  next()
+  res.header('Access-Control-Allow-Origin', '*') // 跨域
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, mytoken') // 请求头中设置允许的请求方法。
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, Authorization')
+  res.setHeader('Content-Type', 'application/json;charset=utf-8') // 使用Content-Type来表示具体请求中的媒体类型信息
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept,X-Requested-With')
+  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS') // 允许访问的方法
+  res.header('X-Powered-By', ' 3.2.1')
+  if (req.method == 'OPTIONS') res.send(200)
+  /*让options请求快速返回*/ else next()
 })
 
 app.get('/login', (req, res, next) => {
@@ -55,7 +68,7 @@ app.post('/api/setList', (req, res, next) => {
         res.json({ code: 200, msg: '添加成功', data: results })
       })
     } else {
-      res.json({ code: 202, msg: '名称重复', data: results })
+      res.json({ code: 202, msg: '名子重复', data: results })
     }
   })
 })
