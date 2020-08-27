@@ -37,7 +37,7 @@ app.all('*', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*') // 跨域
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, mytoken') // 请求头中设置允许的请求方法。
   res.header('Access-Control-Allow-Headers', 'X-Requested-With, Authorization')
-  res.setHeader('Content-Type', 'application/json;charset=utf-8') // 使用Content-Type来表示具体请求中的媒体类型信息
+  res.setHeader('Content-Type', 'application/json; charset=utf-8') // 使用Content-Type来表示具体请求中的媒体类型信息
   res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept,X-Requested-With')
   res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS') // 允许访问的方法
   res.header('X-Powered-By', ' 3.2.1')
@@ -45,7 +45,7 @@ app.all('*', (req, res, next) => {
   /*让options请求快速返回*/ else next()
 })
 
-app.get('/login', (req, res, next) => {
+app.post('/login', (req, res, next) => {
   conn.query('SELECT * FROM students', (e, r) => res.json(new Result({ data: r, msg: '获取成功' })))
 })
 
@@ -93,6 +93,21 @@ app.post('/test/:data', (req, res) => {
   // 后面的表单参数会放到req.query、 路径上的参数会放到req.params里、 json参数会放到req.body里，
   // http://localhost:8888/test/123?a=b    /text是params
   return res.json({ query: req.query, data: req.params, json: req.body })
+})
+
+app.post('/api/login', (req, res) => {
+  const sqlStr = `select username from user where username='${req.body.username}'`
+  const sqlStr2 = `select * from user where password ='${req.body.password}'`
+  conn.query(sqlStr, (err, results) => {
+    if (results.length === 0) {
+      return res.json({ code: 401, msg: '用户不存在', data: results })
+    } else {
+      conn.query(sqlStr2, (err, results2) => {
+        if (results2.length === 0) res.json({ code: 401, msg: '密码错误', data: results2 })
+        else res.json({ code: 200, msg: '登录成功', data: results2 })
+      })
+    }
+  })
 })
 
 function Result({ code = 200, msg = '', data = {} }) {
