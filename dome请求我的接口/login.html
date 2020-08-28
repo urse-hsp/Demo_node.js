@@ -48,8 +48,11 @@
     </div>
     <!-- <script src="./js/axios.min.js"></script> -->
     <script src="./js/Ajax.js"></script>
-    <script src="../js/axios.min.js"></script>
+    <script src="./js/axios.min.js"></script>
     <script>
+        const token = window.sessionStorage.getItem('token')
+        if (token) window.location.href = './TableList.html'
+
         // 默认选择登录
         let selectLogin = 'login1'
         var userInput = document.querySelector('#user')
@@ -89,7 +92,7 @@
                         return document.querySelector('#warn').innerHTML = msg
                     }
                     window.sessionStorage.setItem('token', data.token)
-                    window.location.href = '../list/index.html'
+                    window.location.href = './list/TableList.html'
                 },
                 //异常处理
                 error: function (e) {

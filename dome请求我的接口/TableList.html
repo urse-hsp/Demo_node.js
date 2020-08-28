@@ -9,7 +9,7 @@
   <!-- 引入样式 -->
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
   <!-- 引入组件库 -->
-  <script src="../js/vue.min.js"></script>
+  <script src="./js/vue.min.js"></script>
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 
@@ -30,7 +30,7 @@
     </div>
   </div>
 
-  <script src="../js/axios.min.js"></script>
+  <script src="./js/axios.min.js"></script>
   <script>
     axios.defaults.baseURL = 'http://localhost:8888/api/'
     axios.interceptors.request.use(config => {
@@ -47,34 +47,16 @@
       },
       beforeCreate() {
         const token = window.sessionStorage.getItem('token')
-        if (!token) {
-          window.location.href = '../login/index.html'
-        }
+        if (!token) window.location.href = './index.html'
       },
       created() {
         this.getList()
-        console.log(Math.floor(Date.now() / 1000) + (60 * 60 * 24) * 1)
-        console.log(Math.floor(Date.now() / 1000))
-        this.time(Math.floor(Date.now() / 1000) + (1000 * 60 * 60 * 24))
-        this.time(Math.floor(Date.now() / 1000))
       },
       methods: {
         async getList() {
           const res = await axios.get('getlist')
           this.tableData = res.data.data
           console.log(res)
-        },
-        time(originVal) {
-          const dt = new Date(originVal)
-          const y = dt.getFullYear()
-          const m = (dt.getMonth() + 1 + '').padStart(2, '0')
-          const d = (dt.getDate() + '').padStart(2, '0')
-
-          const hh = (dt.getHours() + '').padStart(2, '0')
-          const mm = (dt.getMinutes() + '').padStart(2, '0')
-          const ss = (dt.getSeconds() + '').padStart(2, '0')
-          console.log(`${y}-${m}-${d}  ${hh}-${mm}-${ss}`)
-          return `${y}-${m}-${d}  ${hh}-${mm}-${ss}`
         }
       },
     })
