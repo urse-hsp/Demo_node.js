@@ -32,7 +32,11 @@
 
   <script src="../js/axios.min.js"></script>
   <script>
-    const url = 'http://localhost:8888/api/'
+    axios.defaults.baseURL = 'http://localhost:8888/api/'
+    axios.interceptors.request.use(config => {
+      config.headers.token = window.sessionStorage.getItem('token')
+      return config
+    })
 
     new Vue({
       el: "#app",
@@ -41,22 +45,43 @@
           tableData: []
         }
       },
+      beforeCreate() {
+        const token = window.sessionStorage.getItem('token')
+        if (!token) {
+          window.location.href = '../login/index.html'
+        }
+      },
       created() {
         this.getList()
+        console.log(Math.floor(Date.now() / 1000) + (60 * 60 * 24) * 1)
+        console.log(Math.floor(Date.now() / 1000))
+        this.time(Math.floor(Date.now() / 1000) + (1000 * 60 * 60 * 24))
+        this.time(Math.floor(Date.now() / 1000))
       },
       methods: {
         async getList() {
-          const res = await axios.get(url + 'getlist')
+          const res = await axios.get('getlist')
           this.tableData = res.data.data
           console.log(res)
+        },
+        time(originVal) {
+          const dt = new Date(originVal)
+          const y = dt.getFullYear()
+          const m = (dt.getMonth() + 1 + '').padStart(2, '0')
+          const d = (dt.getDate() + '').padStart(2, '0')
+
+          const hh = (dt.getHours() + '').padStart(2, '0')
+          const mm = (dt.getMinutes() + '').padStart(2, '0')
+          const ss = (dt.getSeconds() + '').padStart(2, '0')
+          console.log(`${y}-${m}-${d}  ${hh}-${mm}-${ss}`)
+          return `${y}-${m}-${d}  ${hh}-${mm}-${ss}`
         }
       },
     })
 
-    // const url = 'http://localhost:8888/api/'
 
     document.getElementById('btn1').onclick = function () {
-      axios.post(url + 'setList', {
+      axios.post('setList', {
           name: '小王头',
           sex: '男',
           age: '12',
@@ -67,31 +92,22 @@
           console.log(res.data)
         })
     }
-
     document.getElementById('btn2').onclick = function () {
-      axios.put(url + `alterList/${6}`, {
+      axios.put(`alterList/${6}`, {
           name: '小老王'
         })
         .then(res => {
           console.log(res.data)
         })
     }
-
     document.getElementById('btn3').onclick = function () {
-      axios.delete(url + `deleteList/${8}`)
+      axios.delete(`deleteList/${8}`)
         .then(res => {
           console.log(res.data)
         })
     }
-
-    // const headers = {
-    //   'Content-Type': 'application/json',
-    //   Accept: 'application/json',
-    //   Authorization: Token(),
-    // }
-
     document.getElementById('btn4').onclick = function () {
-      axios.get(url + 'getlist')
+      axios.get('getlist')
         .then(res => {
           console.log(res.data)
         })

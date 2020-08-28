@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const { conn } = require('../../modules/connectMysql')
+// 引入jwt token工具
+const JwtUtil = require('../../utils/jwt')
+
+const { conn } = require('../../utils/connectMysql')
 
 router.get('/getlist', (req, res, next) => {
   const sqlStr = 'SELECT * FROM students'
@@ -57,8 +60,12 @@ router.post('/login', (req, res) => {
       return res.json({ code: 401, msg: '用户不存在', data: results })
     } else {
       conn.query(sqlStr2, (err, results2) => {
-        if (results2.length === 0) res.json({ code: 401, msg: '密码错误', data: results2 })
-        else res.json({ code: 200, msg: '登录成功', data: results2 })
+        if (results2.length === 0) return res.json({ code: 401, msg: '密码错误', data: results2 })
+        else {
+          let jwt = new JwtUtil(results2.id)
+          let token = jwt.generateToken()
+          res.json({ code: 200, msg: '登录成功', data: { ...results2[0], token } })
+        }
       })
     }
   })

@@ -84,10 +84,11 @@
                 timeout: 5000,
                 contentType: "application/json",
                 success: function (res) {
-                    const { code, msg } = JSON.parse(res)
+                    const { code, msg, data } = JSON.parse(res)
                     if (code !== 200) {
                         return document.querySelector('#warn').innerHTML = msg
                     }
+                    window.sessionStorage.setItem('token', data.token)
                     window.location.href = '../list/index.html'
                 },
                 //异常处理
@@ -95,13 +96,6 @@
                     console.log(e);
                 }
             })
-            // axios.post(url + 'login', {
-            //     username: userInput.value,
-            //     password: passWordInput.value
-            // })
-            // .then(res => {
-            //     console.log(res.data)
-            // })
         }, false)
     </script>
 </body>
