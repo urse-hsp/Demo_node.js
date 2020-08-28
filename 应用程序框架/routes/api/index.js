@@ -1,13 +1,13 @@
 const express = require('express')
-const router = express.Router();
-const {conn}  = require('../../connect')
-
+const router = express.Router()
+const { conn } = require('../../modules/connectMysql')
 
 router.get('/getlist', (req, res, next) => {
   const sqlStr = 'SELECT * FROM students'
   conn.query(sqlStr, (err, results) => {
     if (err) return res.json({ code: 1, msg: '资料不存在', data: {} })
-    res.json({ code: 200, msg: '获取成功', data: results })
+    // res.json({ code: 200, msg: '获取成功', data: results })
+    res.sendResult(results, 200, '获取成功')
   })
 })
 

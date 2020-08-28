@@ -5,6 +5,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
+
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!-- 引入组件库 -->
+  <script src="../js/vue.min.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
 </head>
 
 <body>
@@ -13,11 +19,41 @@
     <button id="btn2">修改</button>
     <button id="btn3">删除</button>
     <button id="btn4">获取</button>
+
+    <div id="app">
+      <el-table :data="tableData" border style="width: 100%">
+        <el-table-column prop="name" label="姓名" width="180"></el-table-column>
+        <el-table-column prop="age" label="年龄" width="180"></el-table-column>
+        <el-table-column prop="sex" label="性别"></el-table-column>
+        <el-table-column prop="address" label="地址"></el-table-column>
+      </el-table>
+    </div>
   </div>
-  <script src="../js/vue.min.js"></script>
+
   <script src="../js/axios.min.js"></script>
   <script>
     const url = 'http://localhost:8888/api/'
+
+    new Vue({
+      el: "#app",
+      data() {
+        return {
+          tableData: []
+        }
+      },
+      created() {
+        this.getList()
+      },
+      methods: {
+        async getList() {
+          const res = await axios.get(url + 'getlist')
+          this.tableData = res.data.data
+          console.log(res)
+        }
+      },
+    })
+
+    // const url = 'http://localhost:8888/api/'
 
     document.getElementById('btn1').onclick = function () {
       axios.post(url + 'setList', {
@@ -42,7 +78,7 @@
     }
 
     document.getElementById('btn3').onclick = function () {
-      axios.delete(url + `deleteList/${4}`)
+      axios.delete(url + `deleteList/${8}`)
         .then(res => {
           console.log(res.data)
         })

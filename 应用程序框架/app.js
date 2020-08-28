@@ -17,8 +17,11 @@ const app = express()
 app.use(logger('dev'))
 app.use(express.json()) // 解析参数
 app.use(express.urlencoded({ extended: false }))
-app.use(cookieParser())
-app.use(express.static(path.join(__dirname, 'public')))
+app.use(cookieParser()) // 解析 方便操作客户端中的cookie值。
+
+// 利用 Express 托管静态文件
+app.use(express.static(path.join(__dirname, 'public'))) // 绝对路径更安全:
+// app.use('/static', express.static(path.join(__dirname, 'public'))) // 可以通过带有 /static 前缀地址来访问 public 目录中的文件了。
 
 // 设置跨域和相应数据格式
 app.all('*', (req, res, next) => {
@@ -30,8 +33,12 @@ app.all('*', (req, res, next) => {
   res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS') // 允许访问的方法
   res.header('X-Powered-By', ' 3.2.1')
   if (req.method == 'OPTIONS') res.send(200)
-  else next() /*让options请求快速返回*/
+  /*让options请求快速返回*/ else next()
 })
+
+// 初始化统一响应机制
+var resextra = require('./modules/resextra')
+app.use(resextra)
 
 app.use('/', indexRouter)
 app.use('/users', usersRouter)
