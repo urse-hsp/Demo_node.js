@@ -8,6 +8,7 @@ router.get('/', function (req, res, next) {
 
   // res.send()和res.end(原生)用法基本一致,不过省去了请求头的字符集已经状态码等问题
   // res.send('respond with a resource');
+  res.send('respond with a resource')
 
   // 返回json格式
   // res.json('respond with a resource2')

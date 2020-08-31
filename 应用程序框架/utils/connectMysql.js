@@ -10,4 +10,4 @@ const conn = mysql.createConnection({
   multipleStatements: false, // 是否允许一个query中包含多条sql语句
 })
 
-module.exports = {conn}
+module.exports = { conn }

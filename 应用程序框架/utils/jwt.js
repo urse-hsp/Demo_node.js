@@ -11,7 +11,7 @@ class Jwt {
   //生成token
   generateToken() {
     let data = this.data
-    let created = Math.floor(Date.now() / 1000) + (1000 * 60 * 60 * 24) * 1 // 最后面一位设置过期天数
+    let created = Math.floor(Date.now() / 1000) + 1000 * 60 * 60 * 24 * 1 // 最后面一位设置过期天数
     let cert = fs.readFileSync(path.join(__dirname, './pem/rsa_private_key.pem')) //私钥 可以自己生成
     let token = jwt.sign({ data, exp: created }, cert, { algorithm: 'RS256' })
     return token

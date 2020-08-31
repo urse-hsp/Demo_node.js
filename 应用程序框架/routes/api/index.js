@@ -1,48 +1,51 @@
 const express = require('express')
 const router = express.Router()
-// 引入jwt token工具
-const JwtUtil = require('../../utils/jwt')
-
 const { conn } = require('../../utils/connectMysql')
 
 router.get('/getlist', (req, res, next) => {
-  const sqlStr = 'SELECT * FROM students'
+  const json = req.query
+  const sqlStr2 = 'SELECT * FROM students'
+  let basics
+  if (json.currentPage === '1') basics = 0
+  else basics = json.pageSize * (json.currentPage - 1) - 1
+
+  const sqlStr = `SELECT * FROM students LIMIT ${basics},${json.pageSize}`
   conn.query(sqlStr, (err, results) => {
-    if (err) return res.json({ code: 1, msg: '资料不存在', data: {} })
-    // res.json({ code: 200, msg: '获取成功', data: results })
-    res.sendResult(results, 200, '获取成功')
+    if (err) return res.sendResult({}, 1, '失败')
+    conn.query(sqlStr2, (err, results2) => {
+      res.sendResult({ list: results, total: results2.length }, 200, '获取成功')
+    })
   })
 })
 
 router.post('/setList', (req, res, next) => {
-  // const sqlStr = "INSERT into students (id,name,sex,age,address,hou) values(4,'小王','男',12,'吉林',2)"
   const json = req.body
-  const sqlStr1 = `INSERT into students (name,sex,age,address,hou) values('${json.name}','${json.sex}',${json.age},'${json.address}',${json.hou})`
+  const sqlStr1 = `INSERT into students (name,sex,age,location) values('${json.name}','${json.sex}',${json.age},'${json.location}')`
   const sqlStr2 = `select name from students WHERE name='${json.name}' `
   conn.query(sqlStr2, (err, results) => {
     if (results.length === 0) {
       conn.query(sqlStr1, (err, results) => {
-        res.json({ code: 200, msg: '添加成功', data: results })
+        res.sendResult(results, 200, '添加成功')
       })
     } else {
-      res.json({ code: 202, msg: '名子重复', data: results })
+      res.sendResult(results, 202, '用户名姓名重复')
     }
   })
 })
 
 router.put('/alterList/:id', (req, res) => {
-  const sqlStr = `UPDATE students set name='${req.body.name}' where id=${req.params.id}`
+  const sqlStr = `UPDATE students set name='${req.body.name}',sex='${req.body.sex}',age='${req.body.age}',location='${req.body.location}' where id=${req.params.id}`
   conn.query(sqlStr, (err, results) => {
-    if (err) return res.json({ code: 1, msg: '修改失败', data: req.params })
-    res.json({ code: 200, msg: '修改成功', data: {} })
+    if (err) return res.sendResult(req.params, 1, '修改失败')
+    res.sendResult({}, 200, '修改成功')
   })
 })
 
 router.delete('/deleteList/:id', (req, res) => {
   const sqlStr = `delete from students WHERE id = ${req.params.id}`
   conn.query(sqlStr, (err, results) => {
-    if (err) return res.json({ code: 1, msg: '删除失败', data: req.params })
-    res.json({ code: 200, msg: '删除成功' })
+    if (err) return res.sendResult(req.params, 1, '删除失败')
+    res.sendResult({}, 200, '删除成功')
   })
 })
 
@@ -52,22 +55,4 @@ router.post('/test/:data', (req, res) => {
   return res.json({ query: req.query, data: req.params, json: req.body })
 })
 
-router.post('/login', (req, res) => {
-  const sqlStr = `select username from user where username='${req.body.username}'`
-  const sqlStr2 = `select * from user where password ='${req.body.password}'`
-  conn.query(sqlStr, (err, results) => {
-    if (results.length === 0) {
-      return res.json({ code: 401, msg: '用户不存在', data: results })
-    } else {
-      conn.query(sqlStr2, (err, results2) => {
-        if (results2.length === 0) return res.json({ code: 401, msg: '密码错误', data: results2 })
-        else {
-          let jwt = new JwtUtil(results2.id)
-          let token = jwt.generateToken()
-          res.json({ code: 200, msg: '登录成功', data: { ...results2[0], token } })
-        }
-      })
-    }
-  })
-})
 module.exports = router
