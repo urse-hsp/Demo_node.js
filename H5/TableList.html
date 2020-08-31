@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
+    <style>
+      .interval {
+        margin: 15px 0 !important;
+      }
+    </style>
 
     <!-- 引入样式 -->
     <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
@@ -15,7 +20,7 @@
   <body>
     <div>
       <div id="app">
-        <el-button size="mini" type="primary" @click="quit">退出登录</el-button>
+        <el-button size="mini" type="primary" @click="quit" class="interval">退出登录</el-button>
 
         <!-- 表格 -->
         <el-table :data="tableData" border style="width: 100%">
@@ -35,7 +40,7 @@
           </el-table-column>
         </el-table>
 
-        <el-button size="mini" type="primary" @click="addUser">添加用户</el-button>
+        <el-button size="mini" type="primary" @click="addUser" class="interval">添加用户</el-button>
 
         <!-- 分页 -->
         <el-pagination
@@ -235,11 +240,11 @@
                 } else {
                   this.amendUserList()
                 }
+                this.getList()
                 this.$message({
                   type: 'success',
                   message: this.FormType ? '添加成功' : '修改成功',
                 })
-                this.getList()
                 this.$refs.ruleForm.resetFields()
                 this.dialogVisible = false
               } else {
