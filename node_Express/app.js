@@ -1,80 +1,79 @@
+const createError = require('http-errors')
 const express = require('express')
+const path = require('path')
+const cookieParser = require('cookie-parser') // 方便操作客户端中的cookie值。
+const logger = require('morgan')
+const JwtUtil = require('./utils/jwt')
+
+const indexRouter = require('./routes/index')
+const apiRouter = require('./routes/api/index')
+const apiLogin = require('./routes/api/login')
+
 const app = express()
-const cors = require('cors')
-const { json, urlencoded } = require('body-parser') // 解析参数
-const mysql = require('mysql')
-const router = express.Router()
 
-const option = {
-  // 连接数据库的基本配置
-  host: 'localhost', //数据库地址
-  user: 'root',
-  password: '930985128',
-  port: '3306',
-  database: 'login', // 底层数据库
-  connectTimeout: 5000, // 链接超时
-  multipleStatements: false, // 是否允许一个query中包含多条sql语句。 true //允许执行多条语句
-}
+// // view engine setup 视图引擎设置
+// app.set('views', path.join(__dirname, 'views'))
+// app.set('view engine', 'jade')
 
-app.use(cors()) // 解决跨域
-app.use(json()) // json请求
-app.use(urlencoded({ extended: false })) // 表单请求
+app.use(logger('dev'))
+app.use(express.json()) // 解析参数
+app.use(express.urlencoded({ extended: false }))
+app.use(cookieParser()) // 解析 方便操作客户端中的cookie值。
 
-// const conn = mysql.createConnection(option)
-let pool
-reconn()
+// 利用 Express 托管静态文件
+app.use(express.static(path.join(__dirname, 'public'))) //
+// app.use('/static', express.static(path.join(__dirname, 'public'))) // 可以通过带有 /static 前缀地址来访问 public 目录中的文件了。
 
-app.listen(80, () => console.log('项目启动'))
-
-app.all('/login', (req, res) => {
-  // conn.query就是执行一条sql语句，在回调函数里返回结果。
-  // conn.connect() // connect()并不能重连数据库
-
-  pool.query('SELECT * FROM students', (e, r) => res.json(new Result({ data: r })))
-  pool.getConnection((err, conn) => {
-    // 从连接池中哪一个链接
-    conn.query('SELECT * FROM  students', (e, r) => res.json(new Result({ data: r })))
-    conn.release()
-  })
-  // conn.end() // 断开数据库
-  // 这样操作只能链接地磁，之后断开。马虎cnnect不能重新链接数据库
-})
-
-function Result({ code = 1, msg = '', data = {} }) {
-  this.code = code
-  this.msg = msg
-  this.data = data
-}
-
-// 断开数据库重连机制
-function reconn() {
-  pool = mysql.createPool({
-    ...option,
-    waitForCnnerCtion: true, //当午链接可用时， 等待(true)还是错 (false)
-    connectionLimit: 100, // 链接数限制
-    queueLimit: 0, //最大链接等待数 (0为不限制)
-  }) // 创建链接池
-  pool.on('error', (err) => err.code === 'PROTOCOL_CONNECTION_LOST' && setTimeout(reconn, 2000))
-}
-
-module.exports = { pool, Result, router, app }
-
-const { app, pool, Result } = require('./connect')
-const login = require('./login/index')
-
+// 设置跨域和相应数据格式
 app.all('*', (req, res, next) => {
-  // if (!login) return res.json('未登录')
-  // 一搬来写全局拦截。
-  next()
+  res.header('Access-Control-Allow-Origin', '*') // 跨域
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, mytoken') // 请求头中设置允许的请求方法。
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With, Authorization')
+  res.setHeader('Content-Type', 'application/json; charset=utf-8') // 使用Content-Type来表示具体请求中的媒体类型信息
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Authorization, Accept,X-Requested-With')
+  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS') // 允许访问的方法
+  res.header('X-Powered-By', ' 3.2.1')
+  if (req.method == 'OPTIONS') res.send(200)
+  /*让options请求快速返回*/ else next()
 })
 
-app.all('/', (req, res) => {
-  pool.getConnection((err, conn) => {
-    res.json({ a: 'b' })
-    conn.release()
-  })
+// token权限验证
+app.use(function (req, res, next) {
+  // 这里知识把登陆和注册请求去掉了，其他的多有请求都需要进行token校验
+  if (req.url != '/api/login' && req.url != '/test/:data') {
+    let jwt = new JwtUtil(req.headers.token)
+    let result = jwt.verifyToken()
+    // 如果考验通过就next，否则就返回登陆信息不正确
+    if (result == 'err') {
+      console.log(result)
+      res.send({ status: 403, msg: '登录已过期,请重新登录' })
+      // res.render('login.html');
+    } else next()
+  } else next()
 })
 
-app.use('/login', login)
+// 初始化统一响应机制
+const resextra = require('./utils/resextra')
+app.use(resextra)
 
-app.listen(88, () => console.log('服务启动'))
+app.use('/', indexRouter)
+app.use('/api', apiRouter)
+app.use('/api', apiLogin)
+
+// catch 404 and forward to error handler  捕获404并转发到错误处理程序
+app.use(function (req, res, next) {
+  next(createError(404))
+})
+
+// error handler
+app.use(function (err, req, res, next) {
+  // set locals, only providing error in development
+  res.locals.message = err.message
+  res.locals.error = req.app.get('env') === 'development' ? err : {}
+
+  // render the error page
+  res.status(err.status || 500)
+  res.render('error')
+})
+
+module.exports = app
