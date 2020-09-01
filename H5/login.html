@@ -67,7 +67,7 @@
               console.log(datas)
               if (datas.meta.status !== 200) return (document.querySelector('#warn').innerHTML = datas.meta.msg)
               window.sessionStorage.setItem('token', datas.data.token)
-              window.location.href = './TableList.html'
+              window.location.href = './index.html'
             },
             //异常处理
             error: function (e) {

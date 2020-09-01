@@ -7,7 +7,7 @@ router.get('/getlist', (req, res, next) => {
   const sqlStr2 = 'SELECT * FROM students'
   let basics
   if (json.currentPage === '1') basics = 0
-  else basics = json.pageSize * (json.currentPage - 1) - 1
+  else basics = json.pageSize * (json.currentPage - 1)
 
   const sqlStr = `SELECT * FROM students LIMIT ${basics},${json.pageSize}`
   conn.query(sqlStr, (err, results) => {
