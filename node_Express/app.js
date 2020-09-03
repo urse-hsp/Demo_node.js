@@ -22,7 +22,9 @@ app.use(cookieParser()) // 解析 方便操作客户端中的cookie值。
 
 // 利用 Express 托管静态文件
 app.use(express.static(path.join(__dirname, 'public'))) //
-app.use('/', express.static(path.join(__dirname, 'public/dist'))) // 可以通过带有 /static 前缀地址来访问 public 目录中的文件了。
+app.use('/demo', express.static(path.join(__dirname, 'public/dist'))) // 可以通过带有 /static 前缀地址来访问 public 目录中的文件了。
+app.use('/', express.static(path.join(__dirname, 'public/admin'))) // 可以通过带有 /static 前缀地址来访问 public 目录中的文件了。
+
 
 // 设置跨域和相应数据格式
 app.all('*', (req, res, next) => {

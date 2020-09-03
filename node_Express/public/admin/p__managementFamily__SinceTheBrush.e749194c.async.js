@@ -1,0 +1,1 @@
+(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([[10],{Uubl:function(n,e,t){"use strict";t.r(e);var u=t("q1tI"),c=t.n(u),a=t("Hx5s"),o=function(){return c.a.createElement(a["c"],null,"123")};e["default"]=o}}]);
