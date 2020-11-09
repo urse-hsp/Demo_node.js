@@ -1,1 +1,0 @@
-(window["webpackJsonp"]=window["webpackJsonp"]||[]).push([[29],{BNto:function(n,t,e){"use strict";e.r(t);var c=e("q1tI"),o=e.n(c),u=e("Hx5s"),a=function(){return o.a.createElement(u["c"],null,"123")};t["default"]=a}}]);
