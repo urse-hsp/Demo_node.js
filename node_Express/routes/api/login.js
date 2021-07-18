@@ -17,7 +17,7 @@ router.post('/login', (req, res) => {
         else {
           let jwt = new JwtUtil(results2.id)
           let token = jwt.generateToken()
-          res.sendResult({ ...results2[0], token }, 200, '登录成功')
+          res.sendResult({ ...results2[0], token }, '登录成功')
         }
       })
     }
