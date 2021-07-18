@@ -33,18 +33,18 @@ router.post('/setList', (req, res, next) => {
   })
 })
 
-router.put('/alterList/:id', (req, res) => {
-  const sqlStr = `UPDATE students set name='${req.body.name}',sex='${req.body.sex}',age='${req.body.age}',location='${req.body.location}' where id=${req.params.id}`
+router.put('/alterList', (req, res) => {
+  const sqlStr = `UPDATE students set name='${req.body.name}',sex='${req.body.sex}',age='${req.body.age}',location='${req.body.location}' where id=${req.body.id}`
   conn.query(sqlStr, (err, results) => {
     if (err) return res.sendResult(req.params, '修改失败', false)
     res.sendResult({}, '修改成功')
   })
 })
 
-router.delete('/deleteList/:id', (req, res) => {
-  const sqlStr = `delete from students WHERE id = ${req.params.id}`
+router.delete('/deleteList', (req, res) => {
+  const sqlStr = `delete from students WHERE id = ${req.body.id}`
   conn.query(sqlStr, (err, results) => {
-    if (err) return res.sendResult(req.params, '删除失败', 1)
+    if (err) return res.sendResult(req.body, '删除失败', 1)
     res.sendResult('', '删除成功')
   })
 })

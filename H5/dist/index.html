@@ -86,7 +86,7 @@ confirmButtonText: '确定',
 cancelButtonText: '取消',
 type: 'warning',
 }).then(async () => {
-const { data } = await axios.delete(`deleteList/${row.id}`)
+const { data } = await axios.delete(`deleteList`, { params: { id: row.id } })
 if (!data.success) {
 return this.$message({
 type: 'error',
@@ -160,7 +160,7 @@ const { data } = await axios.post('setList', {
 })
 console.log(data)
 if (!data.success) {
-console.log("")
+console.log('')
 return this.$message({
 type: 'error',
 message: data.msg,
@@ -173,8 +173,9 @@ message: '添加成功',
 },
 // 修改用户 请求
 async amendUserList() {
-const { data } = await axios.put(`alterList/${this.ruleForm.id}`, {
+const { data } = await axios.put(`alterList`, {
 ...this.ruleForm,
+id: this.ruleForm.id,
 })
 if (!data.success) {
 return this.$message({

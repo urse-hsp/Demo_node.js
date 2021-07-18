@@ -13,7 +13,7 @@ router.post('/login', (req, res) => {
       return res.sendResult(results, 401, '用户不存在')
     } else {
       conn.query(sqlStr2, (err, results2) => {
-        if (results2.length === 0) return res.sendResult(results2, 401, '密码错误')
+        if (results2.length === 0) return res.sendResult(results2, '密码错误', false)
         else {
           let jwt = new JwtUtil(results2.id)
           let token = jwt.generateToken()

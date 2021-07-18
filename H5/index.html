@@ -63,10 +63,10 @@
             <el-form-item label="年龄" prop="age">
               <el-input v-model="ruleForm.age" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="性别" prop="sex">
-              <el-radio v-model="ruleForm.sex" label="0">男</el-radio>
-              <el-radio v-model="ruleForm.sex" label="1">女</el-radio>
-              <el-radio v-model="ruleForm.sex" label=" ">不填</el-radio>
+            <el-form-item label="性别">
+              <el-radio v-model="ruleForm.sex" :label="0">男</el-radio>
+              <el-radio v-model="ruleForm.sex" :label="1">女</el-radio>
+              <el-radio v-model="ruleForm.sex" label="">不填</el-radio>
             </el-form-item>
             <el-form-item label="地址" prop="location">
               <el-input v-model="ruleForm.location"></el-input>
@@ -116,11 +116,6 @@
                   required: true,
                   trigger: 'blur',
                   message: '请输入年龄!',
-                },
-              ],
-              sex: [
-                {
-                  trigger: 'blur',
                 },
               ],
               location: [
@@ -174,7 +169,7 @@
               cancelButtonText: '取消',
               type: 'warning',
             }).then(async () => {
-              const { data } = await axios.delete(`deleteList/${row.id}`)
+              const { data } = await axios.delete(`deleteList`, { params: { id: row.id } })
               if (!data.success) {
                 return this.$message({
                   type: 'error',
@@ -256,7 +251,7 @@
             })
             console.log(data)
             if (!data.success) {
-              console.log("")
+              console.log('')
               return this.$message({
                 type: 'error',
                 message: data.msg,
@@ -270,8 +265,9 @@
 
           // 修改用户 请求
           async amendUserList() {
-            const { data } = await axios.put(`alterList/${this.ruleForm.id}`, {
+            const { data } = await axios.put(`alterList`, {
               ...this.ruleForm,
+              id: this.ruleForm.id,
             })
             if (!data.success) {
               return this.$message({
@@ -288,13 +284,9 @@
         filters: {
           sexs(data) {
             let sex
-            if (data === '0') {
-              sex = '男'
-            } else if (data === '1') {
-              sex = '女'
-            } else {
-              sex = ''
-            }
+            if (data === 0) sex = '男'
+            else if (data === 1) sex = '女'
+            else sex = ''
             return sex
           },
         },
