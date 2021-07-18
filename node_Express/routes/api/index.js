@@ -45,7 +45,7 @@ router.delete('/deleteList/:id', (req, res) => {
   const sqlStr = `delete from students WHERE id = ${req.params.id}`
   conn.query(sqlStr, (err, results) => {
     if (err) return res.sendResult(req.params, '删除失败', 1)
-    res.sendResult({}, '删除成功')
+    res.sendResult('', '删除成功')
   })
 })
 

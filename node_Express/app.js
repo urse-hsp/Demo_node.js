@@ -51,7 +51,7 @@ app.use(function (req, res, next) {
     // 如果考验通过就next，否则就返回登陆信息不正确
     if (result == 'err') {
       console.log(result)
-      res.send({ status: 403, msg: '登录已过期,请重新登录' })
+      res.send({ success: false, msg: '登录已过期,请重新登录' })
       // res.render('login.html');
     } else next()
   } else next()
