@@ -64,8 +64,7 @@
             contentType: 'application/json',
             success: function (res) {
               const datas = JSON.parse(res)
-              console.log(datas)
-              if (datas.meta.status !== 200) return (document.querySelector('#warn').innerHTML = datas.meta.msg)
+              if (!datas.success) return (document.querySelector('#warn').innerHTML = datas.meta.msg)
               window.sessionStorage.setItem('token', datas.data.token)
               window.location.href = './index.html'
             },

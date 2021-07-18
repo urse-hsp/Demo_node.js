@@ -66,7 +66,7 @@ methods: {
 // 获取数据
 async getList() {
 const { data } = await axios.get('getlist', { params: { ...this.pagination } })
-if (data.meta.status === 200) {
+if (data.success) {
 this.tableData = data.data.list
 this.pagination.total = data.data.total
 }
@@ -87,10 +87,10 @@ cancelButtonText: '取消',
 type: 'warning',
 }).then(async () => {
 const { data } = await axios.delete(`deleteList/${row.id}`)
-if (data.meta.status !== 200) {
+if (!data.success) {
 return this.$message({
 type: 'error',
-message: data.meta.msg,
+message: data.msg,
 })
 }
 this.getList()
@@ -158,10 +158,12 @@ async setUserList() {
 const { data } = await axios.post('setList', {
 ...this.ruleForm,
 })
-if (data.meta.status !== 200) {
+console.log(data)
+if (!data.success) {
+console.log("")
 return this.$message({
 type: 'error',
-message: data.meta.msg,
+message: data.msg,
 })
 }
 this.$message({
@@ -174,10 +176,10 @@ async amendUserList() {
 const { data } = await axios.put(`alterList/${this.ruleForm.id}`, {
 ...this.ruleForm,
 })
-if (data.meta.status !== 200) {
+if (!data.success) {
 return this.$message({
 type: 'error',
-message: data.meta.msg,
+message: data.msg,
 })
 }
 this.$message({
